@@ -1,0 +1,9 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/obj
+/.vs
+/bin/Debug
+/bin/x86/Debug
+/CSInputs.csproj.user

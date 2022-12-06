@@ -7,9 +7,9 @@ namespace CSInputs.Structs.Input
     {
         [FieldOffset(0)]
         public RawInputHeader Header;
-        [FieldOffset(16)]
+        [FieldOffset(24)]
         public RawMouse Mouse;
-        [FieldOffset(16)]
+        [FieldOffset(24)]
         public RawKeyboard Keyboard;
     }
 }

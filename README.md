@@ -2,6 +2,19 @@
 
 This library lets you send and read mouse and keyboard input from windows.
 
+# Installation
+You can install this package from **Nuget Package Manager**.
+```console
+Install-Package CSInputs
+```
+**OR**
+```console
+dotnet add package CSInputs
+```
+
+
+
+
 # Usage Examples
 
 # To Send

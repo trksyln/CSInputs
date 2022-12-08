@@ -1,6 +1,9 @@
 # CSInputs
+This library allows you to send and read mouse / keyboard inputs even when app window inactive.
 
-This library lets you send and read mouse and keyboard input from windows.
+
+`WinForms / Console Application`
+**.NET Framework 3.5+**<br/><br/>
 
 # Installation
 You can install this package from **Nuget Package Manager**.
@@ -11,48 +14,47 @@ Install-Package CSInputs
 ```console
 dotnet add package CSInputs
 ```
-
-
-
+<br/>
 
 # Usage Examples
 
-# To Send
+### -Send Inputs
 
-Keyboard Inputs:
+>Keyboard Inputs:
 ```cs
-SendInput.Keyboard.Send(Enums.KeyboardKeys.F1);
-SendInput.Keyboard.Send(Enums.KeyboardKeys.F1,Enums.KeyFlags.Down);
-SendInput.Keyboard.Send(Enums.KeyboardKeys.F1,Enums.KeyFlags.Up);
+SendInput.Keyboard.Send(KeyboardKeys.F1);
+SendInput.Keyboard.Send(KeyboardKeys.F1,Enums.KeyFlags.Down);
+SendInput.Keyboard.Send(KeyboardKeys.F1,Enums.KeyFlags.Up);
 SendInput.Keyboard.SendChar('A');
 SendInput.Keyboard.SendString("Hello World!");
 ```
+<br/>
 
-Mouse Inputs:
+>Mouse Inputs:
 ```cs
-SendInput.Mouse.Send(Enums.MouseKeys.MouseLeft);
+SendInput.Mouse.Send(MouseKeys.MouseLeft);
 
-SendInput.Mouse.Send(Enums.MouseKeys.MouseLeft,Enums.KeyFlags.Down);
-SendInput.Mouse.Send(Enums.MouseKeys.MouseLeft,Enums.KeyFlags.Up);
+SendInput.Mouse.Send(MouseKeys.MouseLeft,Enums.KeyFlags.Down);
+SendInput.Mouse.Send(MouseKeys.MouseLeft,Enums.KeyFlags.Up);
 
-SendInput.Mouse.Send(Enums.MouseKeys.MouseLeft,Enums.KeyFlags.Down,new Point(150, 123),Enums.MousePositioning.Absolute);
-SendInput.Mouse.Send(Enums.MouseKeys.MouseLeft,Enums.KeyFlags.Down,new Point(-5, -30),Enums.MousePositioning.Relative);
+SendInput.Mouse.Send(MouseKeys.MouseLeft, KeyFlags.Down,new Point(150, 123),MousePositioning.Absolute);
+SendInput.Mouse.Send(MouseKeys.MouseLeft, KeyFlags.Down,new Point(-5, -30),MousePositioning.Relative);
 
 SendInput.Mouse.MoveTo(new Point(150, 123), Enums.MousePositioning.Absolute);
 ```
 
-# To Listen
+### -Listen Inputs
 First you need to instantiate a input listener.
 ```cs
 ReadInput.InputListener listener = new ReadInput.InputListener();
 ```
-Then you can register for keyboard or mouse events to listen inputs.
+Then you can subscribe for keyboard or mouse events to listen inputs.
 ```cs
 listener.KeyboardInputs += Listener_KeyboardInputs;
 listener.MouseInputs += Listener_MouseInputs;
 ```
 
-Sample Console Application
+### -Sample Console Application
 ```cs
 using System;
 // System.Windows.Forms is required to work on console applications.
@@ -68,10 +70,10 @@ internal class Program
         // Instantiate InputListener
         InputListener inputListener = new InputListener();
         
-        // Add KeyboardInputs event handler to listen keyboard inputs.
+        // Subscribe to KeyboardInputs event handler to listen keyboard inputs.
         inputListener.KeyboardInputs += InputListener_KeyboardInputs;
         
-        // Add MouseInputs event handler to listen mouse inputs.
+        // Subscribe to MouseInputs event handler to listen mouse inputs.
         inputListener.MouseInputs += InputListener_MouseInputs;
         Application.Run(); // Required to work on console applications,
     }

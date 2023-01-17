@@ -7,3 +7,5 @@
 /bin/Debug
 /bin/x86/Debug
 /CSInputs.csproj.user
+/bin/Release
+*.pfx

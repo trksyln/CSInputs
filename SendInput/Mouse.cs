@@ -21,16 +21,31 @@ namespace CSInputs.SendInput
         }
         public static void Send(Enums.MouseKeys key, Enums.KeyFlags flags, System.Drawing.Point mousePos, Enums.MousePositioning mouseMovement)
         {
-            key = flags == Enums.KeyFlags.Up ? (Enums.MouseKeys)((int)key * 2) : key;
+
+            short mouseData = 0;
+
+            if (key == Enums.MouseKeys.MouseWheelForward || key == Enums.MouseKeys.MouseWheelRight)
+                mouseData = 1;
+            else
+                mouseData = -1;
+
+            if (key == Enums.MouseKeys.MouseWheelForward || key == Enums.MouseKeys.MouseWheelBackward)
+                key = (Enums.MouseKeys)2048;
+            else if (key == Enums.MouseKeys.MouseWheelLeft || key == Enums.MouseKeys.MouseWheelRight)
+                key = (Enums.MouseKeys)4096;
+            else
+                key = flags == Enums.KeyFlags.Up ? (Enums.MouseKeys)((int)key * 2) : key;
+
+
             Structs.Input.Input input = new Structs.Input.Input();
             Structs.Input.Union inputUnion = new Structs.Input.Union()
             {
                 mouseInput = new Structs.MouseInput
                 {
-                    mouseData = 0,
+                    mouseData = mouseData,
                     dx = CalculateAbsoluteCoordinateX(mousePos.X, mouseMovement),
                     dy = CalculateAbsoluteCoordinateY(mousePos.Y, mouseMovement),
-                    dwFlags = (uint)(mouseMovement == Enums.MousePositioning.Absolute ? 0x0001 | 0x8000 : 0x0001) | ((uint)key * 2),
+                    dwFlags = (uint)(mouseMovement == Enums.MousePositioning.Absolute ? 0x0001 | 0x8000 : 0x0001) | (key != (Enums.MouseKeys)2048 && key != (Enums.MouseKeys)4096 ? (uint)key * 2 : (uint)key),
                     dwExtraInfo = User32.GetMessageExtraInfo()
                 }
             };

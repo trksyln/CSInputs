@@ -1,6 +1,6 @@
 ﻿namespace CSInputs.Enums
 {
-    public enum MouseKeys
+    public enum MouseKeys : short
     {
         None = 0,
         MouseLeft = 1,
@@ -8,10 +8,9 @@
         MouseMiddle = 16,
         XButton1 = 64,
         XButton2 = 256,
-        MouseWheel = 1024,
-        MouseWheelForward = 3932672,
-        MouseWheelBackward = -3931648,
-        MouseWheelLeft = -3931136,
-        MouseWheelRight = 3933184
+        MouseWheelForward = 3931,
+        MouseWheelBackward = 3932,
+        MouseWheelLeft = 3921,
+        MouseWheelRight = 3922
     }
 }

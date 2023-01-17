@@ -1,4 +1,5 @@
-﻿using CSInputs.NativeMethods;
+﻿using CSInputs.Enums;
+using CSInputs.NativeMethods;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -20,6 +21,7 @@ namespace CSInputs.ReadInput
         private System.Drawing.Point LastCursorPos;
         public InputListener(bool notifyKeyDownsOnce = true)
         {
+            //this.AssignHandle(Handle);
             NotifyKeyDownsOnce = notifyKeyDownsOnce;
             CreateHandle(new CreateParams
             {
@@ -68,7 +70,7 @@ namespace CSInputs.ReadInput
                     return;
                 }
 
-                if (rw.Header.dwType == Enums.RawInputType.Keyboard && Enum.IsDefined(typeof(Enums.KeyboardKeys), rw.Keyboard.VirtualKey))
+                if (KeyboardInputs != null && rw.Header.dwType == Enums.RawInputType.Keyboard && Enum.IsDefined(typeof(Enums.KeyboardKeys), rw.Keyboard.VirtualKey))
                 {
                     if (rw.Keyboard.Flags.HasFlag(Enums.KeyFlags.Up))
                     {
@@ -101,7 +103,7 @@ namespace CSInputs.ReadInput
                     }, ref ModifierKeys);
 
                 }
-                if (rw.Header.dwType == Enums.RawInputType.Mouse)
+                if ((MouseMovements != null || MouseInputs != null) && rw.Header.dwType == Enums.RawInputType.Mouse)
                 {
                     Structs.MouseData data = new Structs.MouseData
                     {
@@ -111,16 +113,34 @@ namespace CSInputs.ReadInput
                     };
                     if (rw.Mouse.Buttons != Enums.MouseKeys.None)
                     {
-                        if (data.Flags == Enums.KeyFlags.Up)
-                        {
-                            data.Key = (Enums.MouseKeys)((int)rw.Mouse.Buttons / 2);
-                        }
+                        if ((ushort)rw.Mouse.Buttons == 1024 && rw.Mouse.ButtonData > 0)
+                            data.Key = MouseKeys.MouseWheelForward;
+                        else if ((ushort)rw.Mouse.Buttons == 1024 && rw.Mouse.ButtonData < 0)
+                            data.Key = MouseKeys.MouseWheelBackward;
+                        else if ((ushort)rw.Mouse.Buttons == 2048 && rw.Mouse.ButtonData > 0)
+                            data.Key = MouseKeys.MouseWheelRight;
+                        else if ((ushort)rw.Mouse.Buttons == 2048 && rw.Mouse.ButtonData < 0)
+                            data.Key = MouseKeys.MouseWheelLeft;
                         else
                         {
-                            data.Key = rw.Mouse.Buttons;
+                            if (data.Flags == Enums.KeyFlags.Up)
+                            {
+                                data.Key = (Enums.MouseKeys)((int)rw.Mouse.Buttons / 2);
+                            }
+                            else
+                            {
+                                data.Key = rw.Mouse.Buttons;
+                            }
                         }
-
-                        MouseInputs?.Invoke(data, ref ModifierKeys);
+                        if ((ushort)rw.Mouse.Buttons == 1024 || (ushort)rw.Mouse.Buttons == 2048)
+                        {
+                            data.Flags = KeyFlags.Down;
+                            MouseInputs?.Invoke(data, ref ModifierKeys);
+                            data.Flags = KeyFlags.Up;
+                            MouseInputs?.Invoke(data, ref ModifierKeys);
+                        }
+                        else
+                            MouseInputs?.Invoke(data, ref ModifierKeys);
                     }
                     else if (rw.Mouse.Buttons == Enums.MouseKeys.None && LastCursorPos != data.PositionAbsolute)
                     {

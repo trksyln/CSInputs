@@ -8,7 +8,7 @@ namespace CSInputs.Structs
     {
         public int dx;
         public int dy;
-        public ushort mouseData;
+        public int mouseData;
         public uint dwFlags;
         public readonly uint time;
         public IntPtr dwExtraInfo;

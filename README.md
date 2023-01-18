@@ -57,7 +57,7 @@ listener.MouseInputs += Listener_MouseInputs;
 ### -Sample Console Application
 ```cs
 using System;
-System.Windows.Forms // Is required to work on console applications.
+//System.Windows.Forms is required to work on console applications. so dont forget to add the reference.
 using System.Windows.Forms; 
 using CSInputs.Enums;
 using CSInputs.ReadInput;

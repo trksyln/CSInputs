@@ -46,7 +46,7 @@ namespace CSInputs.SendInput
                     dx = CalculateAbsoluteCoordinateX(mousePos.X, mouseMovement),
                     dy = CalculateAbsoluteCoordinateY(mousePos.Y, mouseMovement),
                     dwFlags = (uint)(mouseMovement == Enums.MousePositioning.Absolute ? 0x0001 | 0x8000 : 0x0001) | (key != (Enums.MouseKeys)2048 && key != (Enums.MouseKeys)4096 ? (uint)key * 2 : (uint)key),
-                    dwExtraInfo = User32.GetMessageExtraInfo()
+                    dwExtraInfo = User32.GetCSInputsMessage
                 }
             };
             input.Data = inputUnion;
@@ -64,7 +64,7 @@ namespace CSInputs.SendInput
                     dx = CalculateAbsoluteCoordinateX(mousePos.X, mouseMovement),
                     dy = CalculateAbsoluteCoordinateY(mousePos.Y, mouseMovement),
                     dwFlags = (uint)(mouseMovement == Enums.MousePositioning.Absolute ? 0x0001 | 0x8000 : 0x0001),
-                    dwExtraInfo = User32.GetMessageExtraInfo()
+                    dwExtraInfo = User32.GetCSInputsMessage
                 }
             };
             input.Data = inputUnion;

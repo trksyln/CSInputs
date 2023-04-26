@@ -8,6 +8,8 @@ namespace CSInputs.NativeMethods
         [DllImport("user32.dll")]
         internal static extern uint MapVirtualKey(uint uCode, uint uMapType);
 
+        internal static IntPtr GetCSInputsMessage = (IntPtr)new Random().Next(int.MaxValue / 2, int.MaxValue);
+
         [DllImport("user32.dll")]
         internal static extern IntPtr GetMessageExtraInfo();
 

@@ -18,11 +18,13 @@ namespace CSInputs.ReadInput
         private ModifierKey ModifierKeys;
         private readonly List<Enums.KeyboardKeys> keysAreDown = new List<Enums.KeyboardKeys>();
         private readonly bool NotifyKeyDownsOnce = true;
+        private readonly bool IgnoreSelf = true;
         private System.Drawing.Point LastCursorPos;
-        public InputListener(bool notifyKeyDownsOnce = true)
+        public InputListener(bool notifyKeyDownsOnce = true, bool ignoreSelf = true)
         {
             //this.AssignHandle(Handle);
             NotifyKeyDownsOnce = notifyKeyDownsOnce;
+            IgnoreSelf = ignoreSelf;
             CreateHandle(new CreateParams
             {
                 X = 0,
@@ -72,6 +74,9 @@ namespace CSInputs.ReadInput
 
                 if (KeyboardInputs != null && rw.Header.dwType == Enums.RawInputType.Keyboard && Enum.IsDefined(typeof(Enums.KeyboardKeys), rw.Keyboard.VirtualKey))
                 {
+                    if (IgnoreSelf && rw.Keyboard.ExtraInformation == (int)User32.GetCSInputsMessage)
+                        return;
+
                     if (rw.Keyboard.Flags.HasFlag(Enums.KeyFlags.Up))
                     {
                         rw.Keyboard.Flags = Enums.KeyFlags.Up;
@@ -105,6 +110,10 @@ namespace CSInputs.ReadInput
                 }
                 if ((MouseMovements != null || MouseInputs != null) && rw.Header.dwType == Enums.RawInputType.Mouse)
                 {
+
+                    if (IgnoreSelf && rw.Mouse.ExtraInformation == (int)User32.GetCSInputsMessage)
+                        return;
+
                     Structs.MouseData data = new Structs.MouseData
                     {
                         Flags = Enum.IsDefined(typeof(Enums.MouseKeys), rw.Mouse.Buttons) ? Enums.KeyFlags.Down : Enums.KeyFlags.Up,

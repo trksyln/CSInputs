@@ -36,7 +36,7 @@ namespace CSInputs.SendInput
                     wVk = 0,
                     wScan = (ushort)User32.MapVirtualKey((uint)key, 0x00),
                     dwFlags = keyFlags,
-                    dwExtraInfo = User32.GetMessageExtraInfo()
+                    dwExtraInfo = User32.GetCSInputsMessage
                 }
             };
             input.type = 1;
@@ -61,7 +61,7 @@ namespace CSInputs.SendInput
                     wVk = 0,
                     wScan = character,
                     dwFlags = 0x0004,
-                    dwExtraInfo = User32.GetMessageExtraInfo()
+                    dwExtraInfo = User32.GetCSInputsMessage
                 }
             };
             Structs.Input.Union up = new Structs.Input.Union()
@@ -71,7 +71,7 @@ namespace CSInputs.SendInput
                     wVk = 0,
                     wScan = character,
                     dwFlags = 0x0004 | 0x0002,
-                    dwExtraInfo = User32.GetMessageExtraInfo()
+                    dwExtraInfo = User32.GetCSInputsMessage
                 }
             };
             inputs[0].type = 1;

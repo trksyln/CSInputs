@@ -6,9 +6,9 @@ namespace CSInputs.Structs
     [StructLayout(LayoutKind.Sequential)]
     internal struct RawKeyboard
     {
-        public short MakeCode;
+        public ushort MakeCode;
         public KeyFlags Flags;
-        public short Reserved;
+        public ushort Reserved;
         public KeyboardKeys VirtualKey;
         public int Message;
         public int ExtraInformation;

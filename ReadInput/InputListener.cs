@@ -20,6 +20,12 @@ namespace CSInputs.ReadInput
         private readonly bool NotifyKeyDownsOnce = true;
         private readonly bool IgnoreSelf = true;
         private System.Drawing.Point LastCursorPos;
+
+        /// <summary>
+        /// Input listener for mouse and keyboard
+        /// </summary>
+        /// <param name="notifyKeyDownsOnce">When key down, notify once or until key up</param>
+        /// <param name="ignoreSelf">Ignore keys, sends from this listener</param>
         public InputListener(bool notifyKeyDownsOnce = true, bool ignoreSelf = true)
         {
             //this.AssignHandle(Handle);
@@ -66,11 +72,8 @@ namespace CSInputs.ReadInput
                 int rwSize = Marshal.SizeOf(typeof(Structs.Input.RawInput));
                 int hdSize = Marshal.SizeOf(typeof(Structs.Input.RawInputHeader));
                 int res = User32.GetRawInputData(m.LParam, 0x10000003, out Structs.Input.RawInput rw, ref rwSize, hdSize);
-
                 if (res < 0)
-                {
                     return;
-                }
 
                 if (KeyboardInputs != null && rw.Header.dwType == Enums.RawInputType.Keyboard && Enum.IsDefined(typeof(Enums.KeyboardKeys), rw.Keyboard.VirtualKey))
                 {
@@ -100,6 +103,12 @@ namespace CSInputs.ReadInput
                     {
                         keysAreDown.Remove(rw.Keyboard.VirtualKey);
                     }
+
+
+                    #region Shieft key left right translation
+                    if (rw.Keyboard.VirtualKey == KeyboardKeys.Shift)
+                        rw.Keyboard.VirtualKey = rw.Keyboard.MakeCode == 0x2A ? KeyboardKeys.LeftShift : KeyboardKeys.RightShift;
+                    #endregion
 
                     KeyboardInputs?.Invoke(new Structs.KeyboardData()
                     {

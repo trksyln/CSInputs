@@ -2,14 +2,20 @@
 
 namespace CSInputs.Structs.Input
 {
-    [StructLayout(LayoutKind.Explicit)]
+    [StructLayout(LayoutKind.Sequential)]
     internal struct RawInput
     {
-        [FieldOffset(0)]
-        public RawInputHeader Header;
-        [FieldOffset(24)]
-        public RawMouse Mouse;
-        [FieldOffset(24)]
-        public RawKeyboard Keyboard;
+        internal RawInputHeader Header;
+        internal Union Data;
+
+        [StructLayout(LayoutKind.Explicit)]
+        internal struct Union
+        {
+            [FieldOffset(0)]
+            internal RawMouse Mouse;
+            [FieldOffset(0)]
+            internal RawKeyboard Keyboard;
+        }
     }
 }
+

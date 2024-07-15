@@ -7,26 +7,26 @@ namespace CSInputs.SendInput
     {
         public static void Send(Enums.KeyboardKeys key)
         {
-            Send(key, Enums.KeyFlags.Down);
+            Send(key, Enums.KeyFlags.KeyDown);
             System.Threading.Thread.Sleep(1);
-            Send(key, Enums.KeyFlags.Up);
+            Send(key, Enums.KeyFlags.KeyUp);
         }
+
         public static void Send(Enums.KeyboardKeys key, Enums.KeyFlags flags)
         {
             uint keyFlags = 0;
             switch (flags)
             {
-                case Enums.KeyFlags.Down:
+                case Enums.KeyFlags.KeyDown:
                     keyFlags = 0x0000 | 0x0008;
                     break;
-                case Enums.KeyFlags.Up:
+                case Enums.KeyFlags.KeyUp:
                     keyFlags = 0x0002 | 0x0008;
                     break;
             }
+
             if (key == Enums.KeyboardKeys.LeftWindows || key == Enums.KeyboardKeys.RightWindows)
-            {
                 keyFlags |= 0x0001;
-            }
 
             Structs.Input.Input input = new Structs.Input.Input();
             Structs.Input.Union inputUnion = new Structs.Input.Union()
@@ -47,9 +47,7 @@ namespace CSInputs.SendInput
         public static void SendString(string text)
         {
             for (int i = 0; i < text.Length; i++)
-            {
                 SendChar(text[i]);
-            }
         }
         public static void SendChar(char character)
         {

@@ -7,8 +7,8 @@ namespace CSInputs.SendInput
     {
         public static void Send(Enums.MouseKeys key)
         {
-            Send(key, Enums.KeyFlags.Down, System.Drawing.Point.Empty, Enums.MousePositioning.Relative);
-            Send(key, Enums.KeyFlags.Up, System.Drawing.Point.Empty, Enums.MousePositioning.Relative);
+            Send(key, Enums.KeyFlags.KeyDown, System.Drawing.Point.Empty, Enums.MousePositioning.Relative);
+            Send(key, Enums.KeyFlags.KeyUp, System.Drawing.Point.Empty, Enums.MousePositioning.Relative);
         }
         public static void Send(Enums.MouseKeys key, Enums.KeyFlags flag)
         {
@@ -16,8 +16,8 @@ namespace CSInputs.SendInput
         }
         public static void Send(Enums.MouseKeys key, System.Drawing.Point mousePos, Enums.MousePositioning mouseMovement)
         {
-            Send(key, Enums.KeyFlags.Down, mousePos, mouseMovement);
-            Send(key, Enums.KeyFlags.Up, mousePos, mouseMovement);
+            Send(key, Enums.KeyFlags.KeyDown, mousePos, mouseMovement);
+            Send(key, Enums.KeyFlags.KeyUp, mousePos, mouseMovement);
         }
         public static void Send(Enums.MouseKeys key, Enums.KeyFlags flags, System.Drawing.Point mousePos, Enums.MousePositioning mouseMovement)
         {
@@ -34,7 +34,7 @@ namespace CSInputs.SendInput
             else if (key == Enums.MouseKeys.MouseWheelLeft || key == Enums.MouseKeys.MouseWheelRight)
                 key = (Enums.MouseKeys)4096;
             else
-                key = flags == Enums.KeyFlags.Up ? (Enums.MouseKeys)((int)key * 2) : key;
+                key = flags == Enums.KeyFlags.KeyUp ? (Enums.MouseKeys)((int)key * 2) : key;
 
 
             Structs.Input.Input input = new Structs.Input.Input();
@@ -74,25 +74,17 @@ namespace CSInputs.SendInput
         private static int CalculateAbsoluteCoordinateY(int y, Enums.MousePositioning mouseMovement)
         {
             if (mouseMovement == Enums.MousePositioning.Absolute)
-            {
                 return (((System.Windows.Forms.Screen.PrimaryScreen.Bounds.Y + y) * 65536) / System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height);
-            }
             else
-            {
                 return y;
-            }
         }
 
         private static int CalculateAbsoluteCoordinateX(int x, Enums.MousePositioning mouseMovement)
         {
             if (mouseMovement == Enums.MousePositioning.Absolute)
-            {
                 return ((System.Windows.Forms.Screen.PrimaryScreen.Bounds.X + x) * 65536) / System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width;
-            }
             else
-            {
                 return x;
-            }
         }
     }
 }

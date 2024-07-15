@@ -2,7 +2,7 @@
 {
     public class ModifierKey
     {
-        public bool Shift, Control, Alt, Windows;
+        public bool LeftShift, RightShift, Control, Alt, LeftWindows, RightWindows;
         public ModifierKey(ReadInput.InputListener listener)
         {
             listener.KeyboardInputs += Listener_KeyboardInputs;
@@ -10,36 +10,27 @@
 
         private void Listener_KeyboardInputs(Structs.KeyboardData data, ref ModifierKey modifierKey)
         {
-            if (data.Key == Enums.KeyboardKeys.Shift)
+            switch (data.Key)
             {
-                Shift = !data.Flags.HasFlag(Enums.KeyFlags.Up);
-            }
-
-            if (data.Key == Enums.KeyboardKeys.Ctrl)
-            {
-                Control = !data.Flags.HasFlag(Enums.KeyFlags.Up);
-            }
-
-            if (data.Key == Enums.KeyboardKeys.Alt)
-            {
-                Alt = !data.Flags.HasFlag(Enums.KeyFlags.Up);
-            }
-            if (data.Key == Enums.KeyboardKeys.LeftWindows || data.Key == Enums.KeyboardKeys.RightWindows)
-            {
-                Windows = !data.Flags.HasFlag(Enums.KeyFlags.Up);
+                case Enums.KeyboardKeys.LeftShift:
+                    LeftShift = !data.Flags.HasFlag(Enums.KeyFlags.KeyUp);
+                    break;
+                case Enums.KeyboardKeys.RightShift:
+                    RightShift = !data.Flags.HasFlag(Enums.KeyFlags.KeyUp);
+                    break;
+                case Enums.KeyboardKeys.Ctrl:
+                    Control = !data.Flags.HasFlag(Enums.KeyFlags.KeyUp);
+                    break;
+                case Enums.KeyboardKeys.Alt:
+                    Alt = !data.Flags.HasFlag(Enums.KeyFlags.KeyUp);
+                    break;
+                case Enums.KeyboardKeys.LeftWindows:
+                    LeftWindows = !data.Flags.HasFlag(Enums.KeyFlags.KeyUp);
+                    break;
+                case Enums.KeyboardKeys.RightWindows:
+                    RightWindows = !data.Flags.HasFlag(Enums.KeyFlags.KeyUp);
+                    break;
             }
         }
-
-        //public void KeyboardInputs(object sender, EventHandlers.KeyboardDataEventArgs key)
-        //{
-        //    if (key.Keyboard.Key == Enums.VirtualKeys.Shift)
-        //        ShiftPressed = !key.Keyboard.Flags.HasFlag(Enums.KeyFlags.Up);
-
-        //    if (key.Keyboard.Key == Enums.VirtualKeys.Ctrl)
-        //        ControlPressed = !key.Keyboard.Flags.HasFlag(Enums.KeyFlags.Up);
-
-        //    if (key.Keyboard.Key == Enums.VirtualKeys.Alt)
-        //        AltPressed = !key.Keyboard.Flags.HasFlag(Enums.KeyFlags.Up);
-        //}
     }
 }

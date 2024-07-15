@@ -5,7 +5,8 @@ namespace CSInputs.Enums
     [Flags]
     public enum KeyFlags : ushort
     {
-        Down = 0,
-        Up = 1,
+        KeyDown = 0,
+        KeyUp = 1,
+        Movement = 2
     }
 }

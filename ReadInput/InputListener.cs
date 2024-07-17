@@ -1,4 +1,5 @@
 ﻿using CSInputs.Enums;
+using CSInputs.Extensions;
 using CSInputs.NativeMethods;
 using System;
 using System.Collections.Generic;

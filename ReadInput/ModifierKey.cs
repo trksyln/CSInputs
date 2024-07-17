@@ -1,4 +1,6 @@
-﻿namespace CSInputs.ReadInput
+﻿using CSInputs.Extensions;
+
+namespace CSInputs.ReadInput
 {
     public class ModifierKey
     {

@@ -1,40 +1,44 @@
-﻿using CSInputs.NativeMethods;
+﻿using CSInputs.Enums;
+using CSInputs.NativeMethods;
+using System;
+using System.Drawing;
 using System.Runtime.InteropServices;
 
 namespace CSInputs.SendInput
 {
     public static class Mouse
     {
-        public static void Send(Enums.MouseKeys key)
+        public static void Send(MouseKeys key, short scrollAmount = 60)
         {
-            Send(key, Enums.KeyFlags.KeyDown, System.Drawing.Point.Empty, Enums.MousePositioning.Relative);
-            Send(key, Enums.KeyFlags.KeyUp, System.Drawing.Point.Empty, Enums.MousePositioning.Relative);
+            Send(key, KeyFlags.KeyDown, Point.Empty, MousePositioning.Relative, scrollAmount);
+            if (key == MouseKeys.MouseWheelForward || key == MouseKeys.MouseWheelRight)
+                Send(key, KeyFlags.KeyUp, Point.Empty, MousePositioning.Relative, scrollAmount);
         }
-        public static void Send(Enums.MouseKeys key, Enums.KeyFlags flag)
+        public static void Send(MouseKeys key, KeyFlags flag, short scrollAmount = 60)
         {
-            Send(key, flag, System.Drawing.Point.Empty, Enums.MousePositioning.Relative);
+            Send(key, flag, Point.Empty, MousePositioning.Relative, scrollAmount);
         }
-        public static void Send(Enums.MouseKeys key, System.Drawing.Point mousePos, Enums.MousePositioning mouseMovement)
+        public static void Send(MouseKeys key, Point mousePos, MousePositioning mouseMovement, short scrollAmount = 60)
         {
-            Send(key, Enums.KeyFlags.KeyDown, mousePos, mouseMovement);
-            Send(key, Enums.KeyFlags.KeyUp, mousePos, mouseMovement);
+            Send(key, KeyFlags.KeyDown, mousePos, mouseMovement, scrollAmount);
+            if (key != MouseKeys.MouseWheelForward || key != MouseKeys.MouseWheelRight)
+                Send(key, KeyFlags.KeyUp, mousePos, mouseMovement, scrollAmount);
         }
-        public static void Send(Enums.MouseKeys key, Enums.KeyFlags flags, System.Drawing.Point mousePos, Enums.MousePositioning mouseMovement)
+        public static void Send(MouseKeys key, KeyFlags flags, Point mousePos, MousePositioning mouseMovement, short scrollAmount = 60)
         {
 
-            short mouseData = 0;
+            if (scrollAmount < 0)
+                scrollAmount = Math.Abs(scrollAmount);
 
-            if (key == Enums.MouseKeys.MouseWheelForward || key == Enums.MouseKeys.MouseWheelRight)
-                mouseData = 1;
+            if (key != MouseKeys.MouseWheelForward && key != MouseKeys.MouseWheelRight)
+                scrollAmount *= -1;
+
+            if (key == MouseKeys.MouseWheelForward || key == MouseKeys.MouseWheelBackward)
+                key = (MouseKeys)2048;
+            else if (key == MouseKeys.MouseWheelLeft || key == MouseKeys.MouseWheelRight)
+                key = (MouseKeys)4096;
             else
-                mouseData = -1;
-
-            if (key == Enums.MouseKeys.MouseWheelForward || key == Enums.MouseKeys.MouseWheelBackward)
-                key = (Enums.MouseKeys)2048;
-            else if (key == Enums.MouseKeys.MouseWheelLeft || key == Enums.MouseKeys.MouseWheelRight)
-                key = (Enums.MouseKeys)4096;
-            else
-                key = flags == Enums.KeyFlags.KeyUp ? (Enums.MouseKeys)((int)key * 2) : key;
+                key = flags == KeyFlags.KeyUp ? (MouseKeys)((int)key * 2) : key;
 
 
             Structs.Input.Input input = new Structs.Input.Input();
@@ -42,10 +46,10 @@ namespace CSInputs.SendInput
             {
                 mouseInput = new Structs.MouseInput
                 {
-                    mouseData = mouseData,
+                    mouseData = scrollAmount,
                     dx = CalculateAbsoluteCoordinateX(mousePos.X, mouseMovement),
                     dy = CalculateAbsoluteCoordinateY(mousePos.Y, mouseMovement),
-                    dwFlags = (uint)(mouseMovement == Enums.MousePositioning.Absolute ? 0x0001 | 0x8000 : 0x0001) | (key != (Enums.MouseKeys)2048 && key != (Enums.MouseKeys)4096 ? (uint)key * 2 : (uint)key),
+                    dwFlags = (uint)(mouseMovement == MousePositioning.Absolute ? 0x0001 | 0x8000 : 0x0001) | (key != (MouseKeys)2048 && key != (MouseKeys)4096 ? (uint)key * 2 : (uint)key),
                     dwExtraInfo = User32.GetCSInputsMessage
                 }
             };
@@ -53,7 +57,7 @@ namespace CSInputs.SendInput
             User32.SendInput(1, new Structs.Input.Input[] { input }, Marshal.SizeOf(typeof(Structs.Input.Input)));
         }
 
-        public static void MoveTo(System.Drawing.Point mousePos, Enums.MousePositioning mouseMovement)
+        public static void MoveTo(Point mousePos, MousePositioning mouseMovement)
         {
             Structs.Input.Input input = new Structs.Input.Input();
             Structs.Input.Union inputUnion = new Structs.Input.Union()
@@ -63,7 +67,7 @@ namespace CSInputs.SendInput
                     mouseData = 0,
                     dx = CalculateAbsoluteCoordinateX(mousePos.X, mouseMovement),
                     dy = CalculateAbsoluteCoordinateY(mousePos.Y, mouseMovement),
-                    dwFlags = (uint)(mouseMovement == Enums.MousePositioning.Absolute ? 0x0001 | 0x8000 : 0x0001),
+                    dwFlags = (uint)(mouseMovement == MousePositioning.Absolute ? 0x0001 | 0x8000 : 0x0001),
                     dwExtraInfo = User32.GetCSInputsMessage
                 }
             };
@@ -71,20 +75,18 @@ namespace CSInputs.SendInput
             User32.SendInput(1, new Structs.Input.Input[] { input }, Marshal.SizeOf(typeof(Structs.Input.Input)));
         }
 
-        private static int CalculateAbsoluteCoordinateY(int y, Enums.MousePositioning mouseMovement)
+        private static int CalculateAbsoluteCoordinateY(int y, MousePositioning mouseMovement)
         {
-            if (mouseMovement == Enums.MousePositioning.Absolute)
+            if (mouseMovement == MousePositioning.Absolute)
                 return (((System.Windows.Forms.Screen.PrimaryScreen.Bounds.Y + y) * 65536) / System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height);
-            else
-                return y;
+            return y;
         }
 
-        private static int CalculateAbsoluteCoordinateX(int x, Enums.MousePositioning mouseMovement)
+        private static int CalculateAbsoluteCoordinateX(int x, MousePositioning mouseMovement)
         {
-            if (mouseMovement == Enums.MousePositioning.Absolute)
+            if (mouseMovement == MousePositioning.Absolute)
                 return ((System.Windows.Forms.Screen.PrimaryScreen.Bounds.X + x) * 65536) / System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width;
-            else
-                return x;
+            return x;
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using CSInputs.Enums;
-using CSInputs.Extensions;
+﻿using CSInputs.Extensions;
 using CSInputs.NativeMethods;
 using System;
 using System.Collections.Generic;
@@ -12,6 +11,7 @@ namespace CSInputs.ReadInput
     {
         public event KeyboardDataDel KeyboardInputs;
         public event MouseDataDel MouseInputs;
+        public event MouseDataDel MouseMovements;
         public delegate void KeyboardDataDel(Structs.KeyboardData data, ref ModifierKey modifierKey);
         public delegate void MouseDataDel(Structs.MouseData data, ref ModifierKey modifierKey);
 
@@ -28,6 +28,7 @@ namespace CSInputs.ReadInput
         /// <param name="ignoreSelf">Ignore keys, sends from this listener</param>
         public InputListener(bool notifyKeyDownsOnce = true, bool ignoreSelf = true)
         {
+            //this.AssignHandle(Handle);
             NotifyKeyDownsOnce = notifyKeyDownsOnce;
             IgnoreSelf = ignoreSelf;
             CreateHandle(new CreateParams
@@ -95,8 +96,8 @@ namespace CSInputs.ReadInput
 
 
                     #region Shieft key left right translation
-                    if (rw.Data.Keyboard.VirtualKey == KeyboardKeys.Shift)
-                        rw.Data.Keyboard.VirtualKey = rw.Data.Keyboard.MakeCode == 0x2A ? KeyboardKeys.LeftShift : KeyboardKeys.RightShift;
+                    if (rw.Data.Keyboard.VirtualKey == Enums.KeyboardKeys.Shift)
+                        rw.Data.Keyboard.VirtualKey = rw.Data.Keyboard.MakeCode == 0x2A ? Enums.KeyboardKeys.LeftShift : Enums.KeyboardKeys.RightShift;
                     #endregion
 
                     KeyboardInputs?.Invoke(new Structs.KeyboardData()
@@ -106,7 +107,7 @@ namespace CSInputs.ReadInput
                     }, ref ModifierKeys);
 
                 }
-                if ((MouseInputs != null) && rw.Header.dwType == Enums.RawInputType.Mouse)
+                if ((MouseMovements != null || MouseInputs != null) && rw.Header.dwType == Enums.RawInputType.Mouse)
                 {
 
                     if (IgnoreSelf && rw.Data.Mouse.ExtraInformation == (int)User32.GetCSInputsMessage)
@@ -118,17 +119,16 @@ namespace CSInputs.ReadInput
                         PositionRelative = new System.Drawing.Point(rw.Data.Mouse.LastX, rw.Data.Mouse.LastY),
                         PositionAbsolute = Cursor.Position
                     };
-
                     if (rw.Data.Mouse.Buttons != Enums.MouseKeys.None)
                     {
                         if ((ushort)rw.Data.Mouse.Buttons == 1024 && rw.Data.Mouse.ButtonData > 0)
-                            data.Key = MouseKeys.MouseWheelForward;
+                            data.Key = Enums.MouseKeys.MouseWheelForward;
                         else if ((ushort)rw.Data.Mouse.Buttons == 1024 && rw.Data.Mouse.ButtonData < 0)
-                            data.Key = MouseKeys.MouseWheelBackward;
+                            data.Key = Enums.MouseKeys.MouseWheelBackward;
                         else if ((ushort)rw.Data.Mouse.Buttons == 2048 && rw.Data.Mouse.ButtonData > 0)
-                            data.Key = MouseKeys.MouseWheelRight;
+                            data.Key = Enums.MouseKeys.MouseWheelRight;
                         else if ((ushort)rw.Data.Mouse.Buttons == 2048 && rw.Data.Mouse.ButtonData < 0)
-                            data.Key = MouseKeys.MouseWheelLeft;
+                            data.Key = Enums.MouseKeys.MouseWheelLeft;
                         else
                         {
                             if (data.Flags == Enums.KeyFlags.KeyUp)
@@ -136,12 +136,11 @@ namespace CSInputs.ReadInput
                             else
                                 data.Key = rw.Data.Mouse.Buttons;
                         }
-
                         if ((ushort)rw.Data.Mouse.Buttons == 1024 || (ushort)rw.Data.Mouse.Buttons == 2048)
                         {
-                            data.Flags = KeyFlags.KeyDown;
+                            data.Flags = Enums.KeyFlags.KeyDown;
                             MouseInputs?.Invoke(data, ref ModifierKeys);
-                            data.Flags = KeyFlags.KeyUp;
+                            data.Flags = Enums.KeyFlags.KeyUp;
                             MouseInputs?.Invoke(data, ref ModifierKeys);
                         }
                         else
@@ -150,8 +149,7 @@ namespace CSInputs.ReadInput
                     else if (rw.Data.Mouse.Buttons == Enums.MouseKeys.None && LastCursorPos != data.PositionAbsolute)
                     {
                         LastCursorPos = data.PositionAbsolute;
-                        data.Flags = KeyFlags.Movement;
-                        MouseInputs?.Invoke(data, ref ModifierKeys);
+                        MouseMovements?.Invoke(data, ref ModifierKeys);
                     }
                 }
             }

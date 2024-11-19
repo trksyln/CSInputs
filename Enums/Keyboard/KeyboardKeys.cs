@@ -13,6 +13,7 @@
         Tab = 0x09,
         Clear = 0x0C,
         Return = 0x0D,
+        NumEnter = 0xE0,
         Shift = 0x10,
         Ctrl = 0x11,
         Alt = 0x12,

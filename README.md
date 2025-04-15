@@ -80,13 +80,13 @@ internal class Program
 
     private static void InputListener_MouseInputs(MouseData data, ref ModifierKey modifierKey)
     {
-        if (data.Key == MouseKeys.MouseRight && data.Flags == KeyFlags.Up)
+        if (data.Key == MouseKeys.MouseRight && data.Flags == KeyFlags.KeyUp)
             Console.WriteLine("Someone just released the \"Right Click\"!");
     }
 
     private static void InputListener_KeyboardInputs(KeyboardData data, ref ModifierKey modifierKey)
     {
-        if (data.Key == KeyboardKeys.Space && data.Flags == KeyFlags.Up)
+        if (data.Key == KeyboardKeys.Space && data.Flags == KeyFlags.KeyUp)
             Console.WriteLine("Someone just released the \"Space\" key!");
     }
 }

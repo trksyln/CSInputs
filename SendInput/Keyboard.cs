@@ -11,28 +11,28 @@ namespace CSInputs.SendInput
             System.Threading.Thread.Sleep(1);
             Send(key, Enums.KeyFlags.KeyUp);
         }
+
         public static void Send(Enums.KeyboardKeys key, Enums.KeyFlags flags)
         {
-            uint keyFlags = 0x0008; // KEYEVENTF_SCANCODE;
+            uint keyFlags = 0;
             switch (flags)
             {
                 case Enums.KeyFlags.KeyDown:
-                    keyFlags |= 0x0000; // KEYEVENTF_KEYDOWN
+                    keyFlags = 0x0000 | 0x0008;
                     break;
                 case Enums.KeyFlags.KeyUp:
-                    keyFlags |= 0x0002; // KEYEVENTF_KEYUP
+                    keyFlags = 0x0002 | 0x0008;
                     break;
             }
 
-
             if (key == Enums.KeyboardKeys.LeftWindows || key == Enums.KeyboardKeys.RightWindows ||
-        key == Enums.KeyboardKeys.Left || key == Enums.KeyboardKeys.Right ||
-        key == Enums.KeyboardKeys.Up || key == Enums.KeyboardKeys.Down ||
-        key == Enums.KeyboardKeys.Insert || key == Enums.KeyboardKeys.Delete ||
-        key == Enums.KeyboardKeys.Home || key == Enums.KeyboardKeys.End ||
-        key == Enums.KeyboardKeys.PageUp || key == Enums.KeyboardKeys.PageDown ||
-        key == Enums.KeyboardKeys.NumEnter || key == Enums.KeyboardKeys.RightControl ||
-        key == Enums.KeyboardKeys.Alt)
+                key == Enums.KeyboardKeys.Left || key == Enums.KeyboardKeys.Right ||
+                key == Enums.KeyboardKeys.Up || key == Enums.KeyboardKeys.Down ||
+                key == Enums.KeyboardKeys.Insert || key == Enums.KeyboardKeys.Delete ||
+                key == Enums.KeyboardKeys.Home || key == Enums.KeyboardKeys.End ||
+                key == Enums.KeyboardKeys.PageUp || key == Enums.KeyboardKeys.PageDown ||
+                key == Enums.KeyboardKeys.NumEnter || key == Enums.KeyboardKeys.RightControl ||
+                key == Enums.KeyboardKeys.LeftWindows || key == Enums.KeyboardKeys.RightWindows)
                 keyFlags |= 0x0001; // KEYEVENTF_EXTENDEDKEY
 
 
@@ -41,7 +41,7 @@ namespace CSInputs.SendInput
             {
                 keyboardInput = new Structs.KeyboardInput
                 {
-                    wVk = 0,
+                    wVk = (ushort)key,
                     wScan = (ushort)User32.MapVirtualKey((uint)key, 0x00),
                     dwFlags = keyFlags,
                     dwExtraInfo = User32.GetCSInputsMessage

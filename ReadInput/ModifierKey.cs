@@ -1,6 +1,4 @@
-﻿using CSInputs.Extensions;
-
-namespace CSInputs.ReadInput
+﻿namespace CSInputs.ReadInput
 {
     public class ModifierKey
     {
@@ -15,22 +13,22 @@ namespace CSInputs.ReadInput
             switch (data.Key)
             {
                 case Enums.KeyboardKeys.LeftShift:
-                    LeftShift = !data.Flags.HasFlag(Enums.KeyFlags.KeyUp);
+                    LeftShift = (data.Flags & Enums.KeyFlags.KeyUp) == 0;
                     break;
                 case Enums.KeyboardKeys.RightShift:
-                    RightShift = !data.Flags.HasFlag(Enums.KeyFlags.KeyUp);
+                    RightShift = (data.Flags & Enums.KeyFlags.KeyUp) == 0;
                     break;
                 case Enums.KeyboardKeys.Ctrl:
-                    Control = !data.Flags.HasFlag(Enums.KeyFlags.KeyUp);
+                    Control = (data.Flags & Enums.KeyFlags.KeyUp) == 0;
                     break;
                 case Enums.KeyboardKeys.Alt:
-                    Alt = !data.Flags.HasFlag(Enums.KeyFlags.KeyUp);
+                    Alt = (data.Flags & Enums.KeyFlags.KeyUp) == 0;
                     break;
                 case Enums.KeyboardKeys.LeftWindows:
-                    LeftWindows = !data.Flags.HasFlag(Enums.KeyFlags.KeyUp);
+                    LeftWindows = (data.Flags & Enums.KeyFlags.KeyUp) == 0;
                     break;
                 case Enums.KeyboardKeys.RightWindows:
-                    RightWindows = !data.Flags.HasFlag(Enums.KeyFlags.KeyUp);
+                    RightWindows = (data.Flags & Enums.KeyFlags.KeyUp) == 0;
                     break;
             }
         }

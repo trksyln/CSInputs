@@ -11,6 +11,8 @@
         MouseWheelForward = 3931,
         MouseWheelBackward = 3932,
         MouseWheelLeft = 3921,
-        MouseWheelRight = 3922
+        MouseWheelRight = 3922,
+        RI_MOUSE_WHEEL = 1024,
+        RI_MOUSE_HWHEEL = 2048
     }
 }
